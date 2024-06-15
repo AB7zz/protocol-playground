@@ -15,10 +15,10 @@ interface IERC20 {
 contract SingleSwap {
     address public constant routerAddress = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
 
-    ISwapRouter public immutable swapRouter;
+    ISwapRouter public immutable swapRouter = ISwapRouter(routerAddress);
 
-    address public constant LINK = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-    address public constant USDC = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    address public constant LINK = 0x0Fd9e8d3aF1aaee056EB9e802c3A762a667b1904;
+    address public constant WETH = 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619;
 
     IERC20 public linkToken = IERC20(LINK);
 
@@ -31,7 +31,7 @@ contract SingleSwap {
         ISwapRouter.ExactInputSingleParams memory params =
             ISwapRouter.ExactInputSingleParams({
                 tokenIn: LINK,
-                tokenOut: USDC,
+                tokenOut: WETH,
                 fee: poolFee,
                 recipient: address(this),
                 deadline: block.timestamp,
@@ -50,7 +50,7 @@ contract SingleSwap {
         ISwapRouter.ExactOutputSingleParams memory params =
             ISwapRouter.ExactOutputSingleParams({
                 tokenIn: LINK,
-                tokenOut: USDC,
+                tokenOut: WETH,
                 fee: poolFee,
                 recipient: address(this),
                 deadline: block.timestamp,
@@ -64,7 +64,7 @@ contract SingleSwap {
 
         if (amountIn < amountInMaximum) {
             linkToken.approve(address(swapRouter), 0);
-            linkToken.transfer(LINK, address(this), amountInMaximum - amountIn);
+            linkToken.transfer(address(this), amountInMaximum - amountIn);
         }
     }
 }

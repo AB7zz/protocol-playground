@@ -3,5 +3,13 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.19.2"
+  },
+  "scripts": {
+    "deploy": "npx hardhat run --network amoy_testnet scripts/deploy.js"
+  },
+  "dependencies": {
+    "@uniswap/v3-core": "^1.0.1",
+    "@uniswap/v3-periphery": "^1.4.4",
+    "dotenv": "^16.4.5"
   }
 }
