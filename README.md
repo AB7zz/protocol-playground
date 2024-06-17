@@ -1,13 +1,8 @@
-# Sample Hardhat Project
+# Protocol Playground
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This is a solidity playground to test out different protocols like UniSwap, Chainlink, Openzeppelin, etc. Feel free to refer to my code to learn how to implement different protocols!
 
-Try running some of the following tasks:
+## Protocols I've implemented in this codebase:
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+1. UniSwap Single Swap
+2. Chainlink VRF

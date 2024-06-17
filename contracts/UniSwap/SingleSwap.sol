@@ -2,6 +2,10 @@
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
+/// @title SingleSwap contract
+/// @author AB7zz
+/// @notice This contract is used to swap tokens (LINK to USDC) using Uniswap V3
+
 import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
 
 interface IERC20 {
