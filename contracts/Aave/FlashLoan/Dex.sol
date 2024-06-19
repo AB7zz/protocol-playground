@@ -6,8 +6,8 @@ import { IERC20 } from "@aave/core-v3/contracts/dependencies/openzeppelin/contra
 contract Dex {
     address payable public owner;
 
-    address private immutable daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-    address private usdcAddress = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+    address private immutable daiAddress = 0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6;
+    address private usdcAddress = 0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8;
 
     IERC20 private dai;
     IERC20 private usdc;
@@ -53,8 +53,16 @@ contract Dex {
         return token.balanceOf(address(this));
     }
 
-    function withdraw(address _tokenAddress, uint256 _amount) external {
+    function withdraw(address _tokenAddress, uint256 _amount) external onlyOwner {
         IERC20 token = IERC20(_tokenAddress);
         token.transfer(msg.sender, _amount);
+    }
+
+    modifier onlyOwner() {
+        require(
+            msg.sender == owner,
+            "Only the contract owner can call this function"
+        );
+        _;
     }
 }

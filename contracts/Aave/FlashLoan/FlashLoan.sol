@@ -1,23 +1,41 @@
-// contracts/FlashLoan.sol
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.10;
 
 import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
+import { IPool } from "@aave/core-v3/contracts/interfaces/IPool.sol";
 import {IPoolAddressesProvider} from "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
 import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol";
 
+interface IDex {
+    function depositUSDC(uint256 _amount) external;
+    function depositDAI(uint256 _amount) external;
+    function buyDAI() external;
+    function sellDAI() external;
+}
+
 contract FlashLoan is FlashLoanSimpleReceiverBase {
     address payable owner;
+
+    address private immutable daiAddress = 0xFF34B3d4Aee8ddCd6F9AFFFB6Fe49bD371b8a357;
+    address private usdcAddress = 0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8;
+    address private dexContractAddress = 0xFeb135d1400cc999fA5fd3E6d550763190dE9d15;
+
+    IERC20 private dai;
+    IERC20 private usdc;
+    IDex private dexContract;
+
 
     constructor(address _addressProvider)
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
     {
         owner = payable(msg.sender);
+
+        dai = IERC20(daiAddress);
+        usdc = IERC20(usdcAddress);
+        dexContract = IDex(dexContractAddress);
     }
 
-    /**
-        This function is called after your contract has received the flash loaned amount
-     */
+    
     function executeOperation(
         address asset,
         uint256 amount,
@@ -25,17 +43,11 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         address initiator,
         bytes calldata params
     ) external override returns (bool) {
-        //
-        // This contract now has the funds requested.
-        // Your logic goes here.
-        //
+        dexContract.depositUSDC(1000000000);
+        dexContract.buyDAI();
+        dexContract.depositDAI(dai.balanceOf(address(this)));
+        dexContract.sellDAI();
 
-        // At the end of your logic above, this contract owes
-        // the flashloaned amount + premiums.
-        // Therefore ensure your contract has enough to repay
-        // these amounts.
-
-        // Approve the Pool contract allowance to *pull* the owed amount
         uint256 amountOwed = amount + premium;
         IERC20(asset).approve(address(POOL), amountOwed);
 
@@ -56,6 +68,16 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
             params,
             referralCode
         );
+    }
+
+    function approve(address _tokenAddress, uint256 _amount) external returns(bool) {
+        IERC20 token = IERC20(_tokenAddress);
+        return token.approve(dexContractAddress, _amount);
+    }
+
+    function allowance(address _tokenAddress) external view returns (uint256) {
+        IERC20 token = IERC20(_tokenAddress);
+        return token.allowance(address(this), dexContractAddress);
     }
 
     function getBalance(address _tokenAddress) external view returns (uint256) {
