@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity =0.8.11;
+pragma solidity =0.8.10;
 
-import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBase.sol";
 
 contract RandomNumber is VRFConsumerBase {
     bytes32 internal keyHash;   // identifies which chainlink orace to use
